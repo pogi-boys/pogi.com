@@ -10,8 +10,6 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import type { Session } from "@pogi/auth";
-import { auth } from "@pogi/auth";
 import { db } from "@pogi/db";
 
 /**
@@ -26,17 +24,8 @@ import { db } from "@pogi/db";
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: {
-  headers: Headers;
-  session: Session | null;
-}) => {
-  const session = opts.session ?? (await auth());
-  const source = opts.headers.get("x-trpc-source") ?? "unknown";
-
-  console.log(">>> tRPC Request from", source, "by", session?.user);
-
+export const createTRPCContext = async (opts: { headers: Headers }) => {
   return {
-    session,
     db,
   };
 };
@@ -88,13 +77,9 @@ export const publicProcedure = t.procedure;
  * procedure
  */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.session?.user) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
     },
   });
 });
