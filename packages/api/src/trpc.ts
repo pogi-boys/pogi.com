@@ -6,13 +6,12 @@
  * tl;dr - this is where all the tRPC server stuff is created and plugged in.
  * The pieces you will need to use are documented accordingly near the end
  */
+import type { Session } from "@pogi/auth";
+import { auth } from "@pogi/auth";
+import { db } from "@pogi/db";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-
-import type { Session } from "@acme/auth";
-import { auth } from "@acme/auth";
-import { db } from "@acme/db";
 
 /**
  * 1. CONTEXT
