@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import baseConfig from "@pogi/tailwind-config"
 
 const config = {
   darkMode: ["class"],
@@ -75,6 +76,7 @@ const config = {
     },
   },
   plugins: [require("tailwindcss-animate")],
+  presets: [baseConfig]
 } satisfies Config;
 
 export default config;
