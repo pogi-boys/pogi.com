@@ -1,6 +1,7 @@
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+
 import { appRouter, createTRPCContext } from "@pogi/api";
 import { auth } from "@pogi/auth";
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
 export const runtime = "edge";
 

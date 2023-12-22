@@ -1,12 +1,13 @@
 import type { TRPCErrorResponse } from "@trpc/server/rpc";
 import { cache } from "react";
 import { headers } from "next/headers";
-import { appRouter, createTRPCContext } from "@pogi/api";
-import { auth } from "@pogi/auth";
 import { createTRPCClient, loggerLink, TRPCClientError } from "@trpc/client";
 import { callProcedure } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
 import SuperJSON from "superjson";
+
+import { appRouter, createTRPCContext } from "@pogi/api";
+import { auth } from "@pogi/auth";
 
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
