@@ -24,8 +24,12 @@ import { db } from "@pogi/db";
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: { headers: Headers }) => {
+export const createTRPCContext = (opts: {
+  headers: Headers;
+  token?: string;
+}) => {
   return {
+    token: opts.token,
     db,
   };
 };
@@ -77,9 +81,13 @@ export const publicProcedure = t.procedure;
  * procedure
  */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+  if (!ctx.token) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
   return next({
     ctx: {
       // infers the `session` as non-nullable
+      token: ctx.token,
     },
   });
 });

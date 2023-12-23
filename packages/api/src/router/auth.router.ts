@@ -3,9 +3,8 @@ import * as argon from "argon2";
 import * as jwt from "jsonwebtoken";
 import * as z from "zod";
 
-import { eq } from "@pogi/db";
+import { eq, schema } from "@pogi/db";
 
-import { users } from "../../../db/src/schema/auth";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 // Creates a JWT that expires in 12 hours
@@ -26,7 +25,7 @@ export const authRouter = createTRPCRouter({
       const { db } = ctx;
 
       const user = await db.query.users.findFirst({
-        where: eq(users.email, input.email),
+        where: eq(schema.users.email, input.email),
       });
       if (!user) {
         throw new TRPCError({

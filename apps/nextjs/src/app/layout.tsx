@@ -6,6 +6,8 @@ import "~/styles/globals.css";
 import { cache } from "react";
 import { headers } from "next/headers";
 
+import { ThemeProvider } from "~/components/theme-provider";
+import { Toaster } from "~/components/ui/sonner";
 import { env } from "~/env";
 import { TRPCReactProvider } from "~/trpc/react";
 
@@ -20,7 +22,7 @@ export const metadata: Metadata = {
       ? "https://turbo.t3.gg"
       : "http://localhost:3000",
   ),
-  title: "Create T3 Turbo",
+  title: "Pogi boys",
   description: "Simple monorepo with shared backend for web & mobile apps",
   openGraph: {
     title: "Create T3 Turbo",
@@ -43,7 +45,15 @@ export default function Layout(props: { children: React.ReactNode }) {
     <html lang="en">
       <body className={["font-sans", fontSans.variable].join(" ")}>
         <TRPCReactProvider headersPromise={getHeaders()}>
-          {props.children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Toaster position="top-center" />
+            {props.children}
+          </ThemeProvider>
         </TRPCReactProvider>
       </body>
     </html>
