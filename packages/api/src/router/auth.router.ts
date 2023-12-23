@@ -3,7 +3,7 @@ import * as argon from "argon2";
 import * as jwt from "jsonwebtoken";
 import * as z from "zod";
 
-import { eq, schema } from "@pogi/db";
+import { and, eq, schema } from "@pogi/db";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
 

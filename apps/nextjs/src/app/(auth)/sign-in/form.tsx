@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
+import { useFormStatus } from "react-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -34,12 +35,14 @@ export default function LoginForm({ performLogin }: LoginFormProps) {
       password: "",
     },
   });
+  const { pending } = useFormStatus();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       await performLogin(values);
     } catch (error) {
       if (error instanceof TRPCClientError) {
+        console.error(error);
         toast.error(error.message);
       }
       toast.error("Something went wrong, please try again later.");
@@ -85,7 +88,9 @@ export default function LoginForm({ performLogin }: LoginFormProps) {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Login</Button>
+              <Button aria-disabled={pending} type="submit">
+                Login
+              </Button>
             </form>
           </Form>
         </div>
