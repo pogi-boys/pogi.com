@@ -1,5 +1,4 @@
 import { cookies } from "next/headers";
-import { TRPCClientError } from "@trpc/client";
 
 import { api } from "~/trpc/server";
 import LoginForm from "./form";
