@@ -1,5 +1,4 @@
-import { cookies } from "next/headers";
-
+import { getSession } from "~/app/actions";
 import { api } from "~/trpc/server";
 import LoginForm from "./form";
 
@@ -9,9 +8,13 @@ export default function LoginPage() {
     password: string;
   }): Promise<void> {
     "use server";
-
+    const session = await getSession();
     const response = await api.auth.login.mutate(values);
-    cookies().set("sessionToken", response.sessionToken);
+
+    session.sessionToken = response.sessionToken;
+    session.isLoggedIn = true;
+
+    await session.save();
   }
 
   return <LoginForm performLogin={performLogin} />;
