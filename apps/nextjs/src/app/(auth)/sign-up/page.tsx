@@ -1,6 +1,6 @@
 import SignUpForm from "./form";
 
-const signUp = () => {
+const SignUpPage = () => {
   return (
     <>
       <SignUpForm />
@@ -8,4 +8,4 @@ const signUp = () => {
   );
 };
 
-export default signUp;
+export default SignUpPage;
