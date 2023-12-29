@@ -7,6 +7,7 @@
  * The pieces you will need to use are documented accordingly near the end
  */
 import { initTRPC, TRPCError } from "@trpc/server";
+import { base64url, jwtDecrypt } from "jose";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
@@ -24,12 +25,18 @@ import { db } from "@pogi/db";
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = (opts: {
+export const createTRPCContext = async (opts: {
   headers: Headers;
   token?: string;
 }) => {
+  let userId: string | undefined = undefined;
+  if (opts.token) {
+    const secret = base64url.decode(process.env.JWT_SECRET!);
+    const { payload } = await jwtDecrypt(opts.token, secret);
+    userId = payload.userId as string;
+  }
   return {
-    token: opts.token,
+    userId,
     db,
   };
 };
@@ -81,13 +88,13 @@ export const publicProcedure = t.procedure;
  * procedure
  */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.token) {
+  if (!ctx.userId) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      token: ctx.token,
+      userId: ctx.userId,
     },
   });
 });
