@@ -1,17 +1,20 @@
 import { TRPCError } from "@trpc/server";
-import * as argon from "argon2";
-import * as jwt from "jsonwebtoken";
+import * as bcrypt from "bcryptjs";
+import * as jose from "jose";
 import * as z from "zod";
 
 import { eq, schema } from "@pogi/db";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
-// Creates a JWT that expires in 12 hours
-const generateJWT = (email: string, id: string) =>
-  jwt.sign({ data: { email, id } }, process.env.JWT_SECRET!, {
-    expiresIn: 60 * 720,
-  });
+const createToken = async (userId: string) => {
+  const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+  const token = await new jose.SignJWT({ userId, exp: 100 })
+    .setProtectedHeader({ alg: "HS256" })
+    .setExpirationTime(Math.floor(new Date().getTime() / 1000) + 12 * 60 * 60)
+    .sign(secret);
+  return token;
+};
 
 export const authRouter = createTRPCRouter({
   login: publicProcedure
@@ -34,7 +37,10 @@ export const authRouter = createTRPCRouter({
         });
       }
 
-      const passwordsMatch = await argon.verify(user.password, input.password);
+      const passwordsMatch = await bcrypt.compare(
+        input.password,
+        user.password,
+      );
       if (!passwordsMatch) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
@@ -42,8 +48,7 @@ export const authRouter = createTRPCRouter({
         });
       }
 
-      // generate JWT
-      const token = generateJWT(user.email, user.id);
+      const token = await createToken(user.id);
 
       return { sessionToken: token };
     }),

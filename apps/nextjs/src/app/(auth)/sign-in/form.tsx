@@ -17,17 +17,14 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-
-type LoginFormProps = {
-  performLogin: (values: { email: string; password: string }) => Promise<void>;
-};
+import { handleLogin } from "../actions";
 
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string(),
 });
 
-export default function LoginForm({ performLogin }: LoginFormProps) {
+export default function LoginForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,7 +36,7 @@ export default function LoginForm({ performLogin }: LoginFormProps) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await performLogin(values);
+      await handleLogin(values);
     } catch (error) {
       if (error instanceof TRPCClientError) {
         console.error(error);

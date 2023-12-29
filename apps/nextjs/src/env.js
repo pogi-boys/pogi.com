@@ -22,12 +22,14 @@ export const env = createEnv({
     DB_PASSWORD: z.string(),
     DB_HOST: z.string(),
     DB_NAME: z.string(),
+    JWT_SECRET: z.string(),
   },
   /**
    * Specify your client-side environment variables schema here.
    * For them to be exposed to the client, prefix them with `NEXT_PUBLIC_`.
    */
   client: {
+    NEXT_PUBLIC_SESSION_SECRET: z.string().min(32),
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
   },
   /**
@@ -40,6 +42,8 @@ export const env = createEnv({
     DB_PASSWORD: process.env.DB_PASSWORD,
     DB_HOST: process.env.DB_HOST,
     DB_NAME: process.env.DB_NAME,
+    NEXT_PUBLIC_SESSION_SECRET: process.env.NEXT_PUBLIC_SESSION_SECRET,
+    JWT_SECRET: process.env.JWT_SECRET,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   skipValidation:

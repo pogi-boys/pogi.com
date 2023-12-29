@@ -8,6 +8,8 @@ import SuperJSON from "superjson";
 
 import { appRouter, createTRPCContext } from "@pogi/api";
 
+import { getSession } from "~/app/actions";
+
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
  * handling a tRPC call from a React Server Component.
@@ -15,8 +17,10 @@ import { appRouter, createTRPCContext } from "@pogi/api";
 const createContext = cache(async () => {
   const heads = new Headers(headers());
   heads.set("x-trpc-source", "rsc");
+  const session = await getSession();
 
   return createTRPCContext({
+    token: session.sessionToken,
     headers: heads,
   });
 });
