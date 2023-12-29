@@ -5,7 +5,7 @@ import * as z from "zod";
 
 import { eq, schema } from "@pogi/db";
 
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure } from "../trpc";
 
 const createToken = async (userId: string) => {
   const secret = new TextEncoder().encode(process.env.JWT_SECRET);
